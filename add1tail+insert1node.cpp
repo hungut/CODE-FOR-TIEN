@@ -58,6 +58,7 @@ node *insertNode(node *head, node *newNode, int position)
       }
       else
       {
+        p=head;
         while (p->next != NULL)
         {
           p = p->next;
