@@ -1,0 +1,24 @@
+Course
+1007	Discrete Structure
+1027	Programming Fundamental
+
+Student
+1	Le Dac Thuong
+3	Nguyen Le Ngoc Duc
+2	Nguyen Minh Khiet
+4	Nguyen Hai Dang
+5	Cao Thanh Binh
+6	Nguyen Van Quoc
+7 	Le Dinh Luan
+8	Nguyen Quang Anh
+9	Huynh Tran Viet
+10	Nguyen Dac Chien
+11	Le Trung Hieu
+12	Tran Tien Loc
+13	Le Thi Nhu Y
+14	Lay Quang Phuc
+15	Nguyen Viet Duc
+16	Trang Hoang Khoi
+17	Ngo Thi Ha Bac
+18	Pham Ngoc Manh
+19	Le Khanh Toan
