@@ -1,4 +1,4 @@
-/*#include <iostream>
+#include <iostream>
 #include <string.h>
 using namespace std;
 void removeLastSubString(char *str,char *sub){
@@ -24,11 +24,11 @@ int main(){
 	 removeLastSubString(str1, str2);
   cout << str1 << endl;
   return 0;
-}*/
+}
 
 
-//--------------------------------------------------//
-/*#include <iostream>
+//******************--------------------------------------------------**********************//
+#include <iostream>
 #include <fstream>
 using namespace std;
 
@@ -83,4 +83,4 @@ int main(int narg, char** argv)
 
 
 	return 0;
-}*/
+}
