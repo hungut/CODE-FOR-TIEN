@@ -1,4 +1,4 @@
-/*#include <iostream>
+#include <iostream>
 #include <fstream>
 using namespace std;
 int* removeElement(int *a, int &n, int position){
@@ -21,10 +21,10 @@ int* newA = removeElement(a, N, 19);
 			cout << newA[i] << " ";
 		}
 return 0;
-}*/
+}
 
-//-------------------------------------------//
- /*#include <iostream>
+//**********************-------------------------------------------******************************//
+ #include <iostream>
 
 #include <string.h>
 
@@ -44,7 +44,7 @@ int *a=new int[30]{1, -1 ,121, -211, 19, 14 ,-101 ,431 ,911, 101, 0, -1, 121, -2
 int N=30,M=27;
 cout<<linearSearch(a,M,N);
 
-}*/
+}
 
 
 
