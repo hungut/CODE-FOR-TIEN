@@ -45,7 +45,7 @@ node *insertNode(node *head, node *newNode, int position)
     {
       int k = 1;
       node *p = head;
-      while (p != NULL & k != position - 1)
+      while (p != NULL && k != position - 1)
       {
         p = p->next;
         ++k;
