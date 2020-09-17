@@ -1,0 +1,5 @@
+add remove and quicksort in dslk.cpp
+stack and queue
+both list and array
+with menu.
+

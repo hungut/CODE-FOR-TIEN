@@ -1,0 +1,29 @@
+2 thuật toán tìm kiếm, 8 thuật toán sắp xếp
+thuật toán sắp xếp số 5 shaker Sort - đọc thêm
+
+**thuật toán tìm kiếm tuyến tính
+lần lượt từ 0 đến N
+**thuật toán tìm kiếm nhị phân
+
+chỉ áp dụng trên 1 dãy có thứ tự (tăng/giảm)
+-mặc định trong môn học là tăng
+tìm cho đến khi L>R
+L=0 ,R = N-1
+MID = (R+L)/2
+a[MID] = x => dừng
+a[MID] > x => R = MID -1
+a[MID] < x => L = MID +1
+
+** Interchange Sort
+
+** Selection Sort
+
+** Bubble Sort
+
+** Shaker Sort đọc thêm
+
+** Insertion Sort
+
+
+
+

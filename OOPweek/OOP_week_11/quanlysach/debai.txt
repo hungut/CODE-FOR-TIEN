@@ -1,0 +1,5 @@
+xay dung doi tuong sach, sach giao khoa, tieu thuyet, tap chi.viet chuong tirnh cho phep quan ly mot danh sach cac doi tuong tren.
+sach{char tuade[100], int sotrang} nhap, xuat
+SGK{char NXB[100]}
+tapchi{int ngayxuatban}
+tieuthuyet{char tacgia[100]}

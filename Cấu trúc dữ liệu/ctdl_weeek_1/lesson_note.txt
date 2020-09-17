@@ -1,0 +1,32 @@
+<độ phức tạp của thực toán
+F(n)
+//độ phức tạp theo bigO
+O(logN)
+O(N)
+O(NlogN)
+O(N^2)
+O(N^3)
+O(2^N)
+O(N!)
+//độ phúc tạp tăng dần từ trên xuống
+##quy tác xác định dộ phực tạp
+//quy tắc tổng
+P1,T1(n) = O(f(n))
+P2,T2(n) = O(g(n))
+T1 (n) + T2(n) = O(f(n)+g(n))
+//quy tác nhân
+P1,P2 lồng nhau
+T1(n)T2(n) = O(f(n)g(n))
+//quy tắc Max
+nếu P có T(n) = O(f(n)+g(n))
+P có độ phức tạp là O(max(f(n),g(n)))
+
+//áp dụng đánh giá chương trình
+
+câu lệnh đơn: QT hằng số
+dãy câu lệnh:  QT tồng
+cậu lệnh rẽ nhánh: QT Max
+câu lệnh loop : QT nhân>
+
+
+
