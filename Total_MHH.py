@@ -16,19 +16,11 @@ def MC_ExtAir (U_ExtCO2, phi_ExtCO2, A_Flr):
 # formula (5)
 def MC_PadAir (U_Pad, phi_Pad, A_Flr, CO2_Out, CO2_Air):
     #toc do cua CO2 qua tam thong gio
-    #if CO2_Out > CO2_Air:
-     return ((U_Pad *phi_Pad)/A_Flr)*(CO2_Out-CO2_Air)
-    #else:
-     print("Input unaccepted")
-     return True
+    return ((U_Pad * phi_Pad)/A_Flr)*(CO2_Out-CO2_Air)
 
 # formula (6)
 def MC_AirTop(f_ThScr,CO2_Air,CO2_Top):  
-     if CO2_Air>CO2_Top:
-       return f_ThScr*(CO2_Air-CO2_Top)
-     else:
-         print("Input unaccepted1") 
-         return True  
+    return f_ThScr*(CO2_Air-CO2_Top) 
 
 # formula (7)
 def f_ThScr(U_ThSrc,K_ThSrc,T_Air,T_Top,p_Air,p_Top):
@@ -36,14 +28,10 @@ def f_ThScr(U_ThSrc,K_ThSrc,T_Air,T_Top,p_Air,p_Top):
     a=U_ThSrc*K_ThSrc*(abs(T_Air-T_Top)**(2/3)) #tham thau qua man
     b=(1-U_ThSrc)*((9.81*(1-U_ThSrc)/(2*p_Mean))*abs(p_Air-p_Top))**(1/2) #khong bi chan qua man
     return a+b
-#Done
+
 # formula (9)
 def MC_AirOut(f_VentSide, f_VentForced, CO2_Air, CO2_Out):
-    if (CO2_Air>CO2_Out)*(f_VentSide + f_VentForced)>=0:
      return (f_VentSide + f_VentForced) * (CO2_Air - CO2_Out)
-    else :
-        print("Input unaccepted2") 
-        return True 
 
 # formula (10)
 def f_VentRoofSide(C_d, A_Flr, U_Roof, U_Side, A_Roof, A_Side, h_SideRoof, T_Air, T_Out, C_w, v_Wind):
@@ -81,11 +69,7 @@ def f_VentForced(eta_InsScr, U_VentForced, phi_VentForced, A_Flr):
 
 # formula (15)
 def MC_TopOut(f_VentRoof,CO2_Top,CO2_Out): 
-    if CO2_Top>CO2_Out:
-        return f_VentRoof*(CO2_Top-CO2_Out)
-    else:
-        print("Input unaccepted3")
-        return True
+    return f_VentRoof*(CO2_Top-CO2_Out)
 
 # formula (16)
 def f_VentRoof(U_ThSrc,f2_VentRoof,f_leakage,f_VentRoofSide,eta_InsScr,eta_Side,eta_Roof,eta_Roof_Thr):
@@ -98,19 +82,15 @@ def f_VentRoof(U_ThSrc,f2_VentRoof,f_leakage,f_VentRoofSide,eta_InsScr,eta_Side,
 # formula (17)
 def f2_VentRoof(C_d,U_Roof,A_Roof,A_Flr,h_Roof,T_Air,T_Out,C_w,v_Wind):
     T_Mean=(T_Air+T_Out)/2
-    if ((9.81*h_Roof*(T_Air-T_Out))/(2*T_Mean)+(C_w*(v_Wind**2)))>0:
-     a=((C_d*U_Roof*A_Roof)/(2*A_Flr))*((9.81*h_Roof*(T_Air-T_Out))/(2*T_Mean)+C_w*(v_Wind**2))**(1/2) 
-     return a
-    else :
-     print("Input unaccepted4")
-     return True;                 
+    a=((C_d*U_Roof*A_Roof)/(2*A_Flr))*((9.81*h_Roof*(T_Air-T_Out))/(2*T_Mean)+C_w*(v_Wind**2))**(1/2) 
+    return a         
 
 # formula (18)
 def MC_AirCan (M_CH2O, P, R, h_CBuf):
     if P>R:
-     return M_CH2O * h_CBuf * (P - R)
+     return M_CH2O*h_CBuf*(P - R)
     else:
-        print("Input unaccepted5")
+        print("Input unaccepted")
         return True
 
 # formula (19)
@@ -163,22 +143,21 @@ with open('MHH.csv','r') as csv_file:
         ###
         co2Air=(float)(line[0])# 2 tham số truyền vào
         co2Top=(float)(line[1])
-
+        #MC_BlowAir
         mc_BlowAir=MC_BlowAir((float)(line[20]),(float)(line[3]),(float)(line[13]),(float)(line[10]))
-
+        #MC_ExtAir
         mc_ExtAir=MC_ExtAir((float)(line[4]),(float)(line[27]),(float)(line[10]))
-
+        #MC_PadAir
         mc_PadAir=MC_PadAir((float)(line[5]),(float)(line[28]),(float)(line[10]),(float)(line[2]),co2Air)
-        if mc_PadAir==True: continue
-        ###
+        #MC_AirTop
         f_Th=f_ThScr((float)(line[6]),(float)(line[14]),(float)(line[17]),(float)(line[18]),(float)(line[30]),(float)(line[31]))
+
         mc_AirTop=MC_AirTop(f_Th,co2Air,co2Top)
-        if mc_AirTop==True: continue
-        ###
+        #MC_AirOut
         eta_insScr=eta_InsScr((float)(line[33]))
 
         f_leak=f_leakage((float)(line[34]),(float)(line[32]))
-
+        # special_f_VentSide is f_VentRoofSide when A_Roof == 0
         f2_VentSide=f_VentRoofSide((float)(line[15]),(float)(line[10]),(float)(line[7]),(float)(line[8]),0,(float)(line[12]),(float)(line[25]),(float)(line[17]),(float)(line[18]),(float)(line[16]),(float)(line[32]))
         
         f_ventRoofSide=f_VentRoofSide((float)(line[15]),(float)(line[10]),(float)(line[7]),(float)(line[8]),(float)(line[10]),(float)(line[12]),(float)(line[25]),(float)(line[17]),(float)(line[18]),(float)(line[16]),(float)(line[32]))
@@ -188,16 +167,13 @@ with open('MHH.csv','r') as csv_file:
         f_ventForced=f_VentForced(eta_insScr,(float)(line[9]),(float)(line[29]),(float)(line[10]))
         
         mc_AirOut=MC_AirOut(f_ventSide, f_ventForced,co2Air,(float)(line[2]))
-        if mc_AirOut==True: continue
-        ###
-        f2_ventRoof=f2_VentRoof((float)(line[15]),(float)(line[7]),(float)(line[11]),(float)(line[10]),(float)(line[26]),(float)(line[17]),(float)(line[18]),(float)(line[16]),(float)(line[32]))
-        if f2_ventRoof==True : continue
+        #MC_TopOut
+        f2_ventRoof=f2_VentRoof((float)(line[15]),(float)(line[7]),(float)(line[11]),(float)(line[10]),(float)(line[26]),(float)(line[17]),(float)(line[19]),(float)(line[16]),(float)(line[32]))
 
         f_ventRoof=f_VentRoof((float)(line[6]),f2_ventRoof,f_leak,f_ventRoofSide,eta_insScr,(float)(line[21]),(float)(line[23]),(float)(line[24]))
 
         mc_TopOut=MC_TopOut(f_ventRoof,co2Top,(float)(line[2]))
-        if mc_TopOut==True :continue
-        ###
+        #MC_AirCan
         #calculate p
         f_t=f_T((float)(line[40]),(float)(line[41]),(float)(line[37]),(float)(line[36]))
 
@@ -212,8 +188,7 @@ with open('MHH.csv','r') as csv_file:
         p=P(pmax_LT,co2Air,(float)(line[39]))
 
         mc_AirCan=MC_AirCan(0.03,p,(float)(line[35]),h_CBuf((float)(line[49]),(float)(line[50])))
-        if mc_AirCan==True: continue
-        ###
+        #result
         ans1,ans2=dx(mc_BlowAir,mc_ExtAir,mc_PadAir,mc_AirCan,mc_AirTop,mc_AirOut,mc_TopOut,(float)(line[47]),(float)(line[48]))
         print("[ CO2_Air' ] :",round(ans1,4))
         print("[ CO2_Top' ] :",round(ans2,4))  
