@@ -187,50 +187,57 @@ def dx(CO2_Air,CO2_Top):
 #biến phụ thuộc CO2_Air:MC_PadAir,MC_AirCan,MC_AirTop,MC_AirOut
 #biến phụ thuộc CO2_Top:MC_AirTop,MC_TopOut
 def euler(func,args,CO2_Air0,CO2_Top0,h):
-   #h is the number of steps we must finish
-   t=h#delta_t(t)=h 
-   f1,f2=func(*args)#return the right side of (1) and (2) with parameter are CO2_Air and CO2_Top
-   #Step 1: CO2_Air=CO2_Air0;CO2_Top=CO2_Top0
-   P_t=CO2_Air0+t*f1   
-   Q_t=CO2_Top0+t*f2
+   f1,f2=func(*args) #return the right side of (1) and (2) with parameters are CO2_Air and CO2_Top
+   #Step 1:calculate values at the time (t+h) respectively
+   P_t=CO2_Air0+h*f1   
+   Q_t=CO2_Top0+h*f2
    return P_t,Q_t
 def rk4(func,args,CO2_Air0,CO2_Top0,h):     
-   t=h
-   k1_1,k1_2=func(*args)#caculate k1 cho f1 và f2
-   #function f1
-   P_t1=CO2_Air0+k1_1*(h/2)#with k1(f1)
+   k1_1,k1_2=func(*args) #calculate k1 for f1 and f2
+
+   #function f1 recpectively the right side of (1)
+   #update values of CO2_Air and CO2_Top at (t+h/2) with k1_1
+   P_t1=CO2_Air0+k1_1*(h/2)
    Q_t1=CO2_Top0+k1_1*(h/2)
    
-   a=func(P_t1,Q_t1) 
-   k2_1=a[0]#get fisrt component
+   a=func(P_t1,Q_t1) #for calculate k2_1 with new CO2_Air and CO2_Top
+   k2_1=a[0] #get fisrt component
+   #update values of CO2_Air and CO2_Top at (t+h/2) with k2_1
    P_t1=CO2_Air0+k2_1*(h/2)
    Q_t1=CO2_Top0+k2_1*(h/2)
 
-   a=func(P_t1,Q_t1)
-   k3_1=a[0]#get fisrt component 
+   a=func(P_t1,Q_t1) #for calculate k3_1 with new CO2_Air and CO2_Top
+   k3_1=a[0] #get fisrt component 
+   #update values of CO2_Air and CO2_Top at (t+h) with k3_1
    P_t1=CO2_Air0+k3_1*(h)
    Q_t1=CO2_Top0+k3_1*(h)
 
-   a=func(P_t1,Q_t1) 
+   a=func(P_t1,Q_t1) #for calculate k4_1 with new CO2_Air and CO2_Top
    k4_1=a[0]#get fisrt component
-   P_final=CO2_Air0+(t/6)*(k1_1+2*k2_1+2*k3_1+k4_1)
-   #function f2
-   P_t2=CO2_Air0+k1_2*(h/2) #with k1(f2)
+   #calculate CO2_Air(t+h)
+   P_final=CO2_Air0+(h/6)*(k1_1+2*k2_1+2*k3_1+k4_1)
+
+   #function f2 recpectively the right side of (2)
+   #update values of CO2_Air and CO2_Top at (t+h/2) with k1_2
+   P_t2=CO2_Air0+k1_2*(h/2) 
    Q_t2=CO2_Top0+k1_2*(h/2)
 
-   a=func(P_t2,Q_t2) 
+   a=func(P_t2,Q_t2) #for calculate k2_2 with new CO2_Air and CO2_Top
    k2_2=a[1] #get second component
+   #update values of CO2_Air and CO2_Top at (t+h/2) with k2_2
    P_t2=CO2_Air0+k2_2*(h/2)
    Q_t2=CO2_Top0+k2_2*(h/2)
 
-   a=func(P_t2,Q_t2) 
+   a=func(P_t2,Q_t2) #for calculate k3_2 with new CO2_Air and CO2_Top
    k3_2=a[1] #get second component
+   #update values of CO2_Air and CO2_Top at (t+h) with k3_2
    P_t2=CO2_Air0+k3_2*(h)
    Q_t2=CO2_Top0+k3_2*(h)
 
-   a=func(P_t2,Q_t2) 
+   a=func(P_t2,Q_t2) #for calculate k4_2 with new CO2_Air and CO2_Top
    k4_2=a[1] #get second component
-   Q_final=CO2_Top0+(t/6)*(k1_2+2*k2_2+2*k3_2+k4_2)
+   #calculate CO2_Top(t+h)
+   Q_final=CO2_Top0+(h/6)*(k1_2+2*k2_2+2*k3_2+k4_2)
    return P_final,Q_final
 
 #for read csv
@@ -240,13 +247,13 @@ with open('MHH.csv','r') as csv_file:
     next(csv_reader) #for ignore the first line
     
     for line in csv_reader:
-       A,B,CO2_Out,U_Blow,U_ExtCO2,U_Pad,U_ThSrc,U_Roof,U_Side,U_VentForced,A_Flr,A_Roof,A_Side,P_Blow,K_ThSrc,C_d,C_w,T_Air,T_Top,T_Out,eta_HeatCO2,eta_Side,eta_SideThr,eta_Roof,eta_Roof_Thr,h_SideRoof,h_Roof,phi_ExtCO2,phi_Pad,phi_VentForced,p_Air,p_Top,v_Wind,zeta_InsScr,c_leakage,R,S,Hd,Ha,Res,T,T_0,k_T0,LAI,K,m,L_0,cap_CO2Air,cap_CO2Top,C_Buf,C_Max_Buf=Input(line[0],line[1],line[2],line[3],line[4],line[5],line[6],line[7],line[8],line[9],line[10],line[11],line[12],line[13],line[14],line[15],line[16],line[17],line[18],line[19],line[20],line[21],line[22],line[23],line[24],line[25],line[26],line[27],line[28],line[29],line[30],line[31],line[32],line[33],line[34],line[35],line[36],line[37],line[38],line[39],line[40],line[41],line[42],line[43],line[44],line[45],line[46],line[47],line[48],line[49],line[50])
-       print("CO2_Air0 =",A,"CO2_Top0 =",B)
-       ans1,ans2=euler(dx,(A,B),A,B,0.1)#h=0.1
+       CO2_Air,CO2_Top,CO2_Out,U_Blow,U_ExtCO2,U_Pad,U_ThSrc,U_Roof,U_Side,U_VentForced,A_Flr,A_Roof,A_Side,P_Blow,K_ThSrc,C_d,C_w,T_Air,T_Top,T_Out,eta_HeatCO2,eta_Side,eta_SideThr,eta_Roof,eta_Roof_Thr,h_SideRoof,h_Roof,phi_ExtCO2,phi_Pad,phi_VentForced,p_Air,p_Top,v_Wind,zeta_InsScr,c_leakage,R,S,Hd,Ha,Res,T,T_0,k_T0,LAI,K,m,L_0,cap_CO2Air,cap_CO2Top,C_Buf,C_Max_Buf=Input(line[0],line[1],line[2],line[3],line[4],line[5],line[6],line[7],line[8],line[9],line[10],line[11],line[12],line[13],line[14],line[15],line[16],line[17],line[18],line[19],line[20],line[21],line[22],line[23],line[24],line[25],line[26],line[27],line[28],line[29],line[30],line[31],line[32],line[33],line[34],line[35],line[36],line[37],line[38],line[39],line[40],line[41],line[42],line[43],line[44],line[45],line[46],line[47],line[48],line[49],line[50])
+       print("CO2_Air0 =",CO2_Air,"CO2_Top0 =",CO2_Top,"h =",600)
+       ans1,ans2=euler(dx,(CO2_Air,CO2_Top),CO2_Air,CO2_Top,600)#h=0.1
        print("FOR EULER:")
        print("[ CO2_Air(t+h) ] :",round(ans1,4))
        print("[ CO2_Top(t+h) ] :",round(ans2,4)) 
-       ans3,ans4=rk4(dx,(A,B),A,B,0.1)
+       ans3,ans4=rk4(dx,(CO2_Air,CO2_Top),CO2_Air,CO2_Top,600)
        print("FOR RUNGE-KUTTAR:")
        print("[ CO2_Air(t+h) ] :",round(ans3,4))
        print("[ CO2_Top(t+h) ] :",round(ans4,4))
