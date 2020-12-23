@@ -1,4 +1,5 @@
 import math
+import csv
 # formula (3)
 def MC_BlowAir (eta_HeatCO2, U_Blow, P_Blow, A_Flr):
     return (eta_HeatCO2 * U_Blow * P_Blow)/A_Flr
@@ -27,7 +28,7 @@ def f_ThScr(U_ThSrc,K_ThSrc,T_Air,T_Top,p_Air,p_Top):
 def MC_AirOut(f_VentSide, f_VentForced, CO2_Air, CO2_Out):
      return (f_VentSide + f_VentForced) * (CO2_Air - CO2_Out)
 
-# formula (630)
+# formula (A_Flr)
 def f_VentRoofSide(C_d, A_Flr, U_Roof, U_Side, A_Roof, A_Side, h_SideRoof, T_Air, T_Out, C_w, v_Wind):
     T_Mean_Air=(T_Air+T_Out)/2
     ratio = C_d / A_Flr
@@ -123,54 +124,62 @@ def Pmax_LT( Pmax_T,L,P_MLT):
     return Pmax_LT
 
 #khai bao bien ngoai tru CO2_Air và CO2_Top
-#CO2_Out(2),U_Blow(3),U_ExtCO2(4),U_Pad(5),U_ThSrc(6),U_Roof(7),U_Side(8),U_VentForced(9),A_Flr(630),A_Roof(11),A_Side(12),P_Blow(13),K_ThSrc(14),C_d(0.65),C_w(16),T_Air(17),T_Top(18),T_Out(19),eta_HeatCO2(20),eta_Side(21),eta_SideThr(22),eta_Roof(23),eta_Roof_Thr(24),h_SideRoof(25),h_Roof(26),phi_ExtCO2(27),phi_Pad(28),phi_VentForced(29),p_Air(30),p_Top(31),v_Wind(32),zeta_InsScr(33),c_leakage(34),R(35),S(36),Hd(37),Ha(38),Res(39),T(40),T_0(41),k_T0(42),LAI(43),K(44),m(45),L_0(46),cap_CO2Air(47),cap_CO2Top(48),C_Buf(49),C_Max_Buf(50)
+def Input(*args):
+    ret=[]
+    for arg in args:
+        ret.append(float(arg))
+    return ret
+
+A,B,CO2_Out,U_Blow,U_ExtCO2,U_Pad,U_ThSrc,U_Roof,U_Side,U_VentForced,A_Flr,A_Roof,A_Side,P_Blow,K_ThSrc,C_d,C_w,T_Air,T_Top,T_Out,eta_HeatCO2,eta_Side,eta_SideThr,eta_Roof,eta_Roof_Thr,h_SideRoof,h_Roof,phi_ExtCO2,phi_Pad,phi_VentForced,p_Air,p_Top,v_Wind,zeta_InsScr,c_leakage,R,S,Hd,Ha,Res,T,T_0,k_T0,LAI,K,m,L_0,cap_CO2Air,cap_CO2Top,C_Buf,C_Max_Buf=Input('0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0')
 
 def dx(CO2_Air,CO2_Top):
-        mc_BlowAir=MC_BlowAir(57,0.6,500000,630)
+        #MC_BlowAir
+        mc_BlowAir=MC_BlowAir(eta_HeatCO2,U_Blow,P_Blow,A_Flr)
+        #MC_ExtAir
+        mc_ExtAir=MC_ExtAir(U_ExtCO2,phi_ExtCO2,A_Flr)
+        #MC_PadAir
+        mc_PadAir=MC_PadAir(U_Pad,phi_Pad,A_Flr,CO2_Out,CO2_Air)
+        #MC_AirTop
+        f_Th=f_ThScr(U_ThSrc,K_ThSrc,T_Air,T_Top,p_Air,p_Top)
 
-        mc_ExtAir=MC_ExtAir(0.6,13900,630)
-
-        mc_PadAir=MC_PadAir(0.6,15.1,630,407,CO2_Air)
-        ###
-        f_Th=f_ThScr(0.6,6,276.5,301.28,4.1,7.2)
         mc_AirTop=MC_AirTop(f_Th,CO2_Air,CO2_Top)
-        ###
-        eta_insScr=eta_InsScr(0.33)
+        #MC_AirOut
+        eta_insScr=eta_InsScr(zeta_InsScr)
 
-        f_leak=f_leakage(1,3)
+        f_leak=f_leakage(c_leakage,v_Wind)
+        # special_f_VentSide is f_VentRoofSide when A_Roof == 0
+        f2_VentSide=f_VentRoofSide(C_d,A_Flr,U_Roof,U_Side, 0 ,A_Side,h_SideRoof,T_Air,T_Top,C_w,v_Wind)
+        
+        f_ventRoofSide=f_VentRoofSide(C_d,A_Flr,U_Roof,U_Side,A_Flr,A_Side,h_SideRoof,T_Air,T_Top,C_w,v_Wind)
+        
+        f_ventSide=f_VentSide(eta_insScr, f2_VentSide, f_leak,U_ThSrc, f_ventRoofSide,eta_Side,eta_SideThr)
+        
+        f_ventForced=f_VentForced(eta_insScr,U_VentForced,phi_VentForced,A_Flr)
+        
+        mc_AirOut=MC_AirOut(f_ventSide, f_ventForced,CO2_Air,CO2_Out)
+        #MC_TopOut
+        f2_ventRoof=f2_VentRoof(C_d,U_Roof,A_Roof,A_Flr,h_Roof,T_Air,T_Out,C_w,v_Wind)
 
-        f2_VentSide=f_VentRoofSide(0.65,630,0.8,0.8,0,56.7,3,276.5,301.28,0.07,3)
-        
-        f_ventRoofSide=f_VentRoofSide(0.65,630,0.8,0.8,630,56.7,3,276.5,301.28,0.07,3)
-        
-        f_ventSide=f_VentSide(eta_insScr, f2_VentSide, f_leak,0.8, f_ventRoofSide,409,511)
-        
-        f_ventForced=f_VentForced(eta_insScr,0.8,14,630)
-        
-        mc_AirOut=MC_AirOut(f_ventSide, f_ventForced,CO2_Air,407)
-        ###
-        f2_ventRoof=f2_VentRoof(0.65,0.8,11,630,0.5,276.5,301.28,0.07,3)
+        f_ventRoof=f_VentRoof(U_ThSrc,f2_ventRoof,f_leak,f_ventRoofSide,eta_insScr,eta_Side,eta_Roof,eta_Roof_Thr)
 
-        f_ventRoof=f_VentRoof(0.8,f2_ventRoof,f_leak,f_ventRoofSide,eta_insScr,409,0.8,0.9)
-
-        mc_TopOut=MC_TopOut(f_ventRoof,CO2_Top,407)
-        ###
+        mc_TopOut=MC_TopOut(f_ventRoof,CO2_Top,CO2_Out)
+        #MC_AirCan
         #calculate p
-        f_t=f_T(290,298,220000,710)
+        f_t=f_T(T,T_0,Hd,S)
 
-        P_Max_T1=P_Max_T(1,37000,290,298,220000,710,f_t)
+        P_Max_T1=P_Max_T(k_T0,Ha,T,T_0,Hd,S,f_t)
 
-        l=L(315,0.7,0.1,1.5)
+        l=L(L_0,K,m,LAI)
         
-        P_MLT=1
+        P_MLT=k_T0
 
         pmax_LT=Pmax_LT(P_Max_T1,l,P_MLT)
         
-        p=P(pmax_LT,CO2_Air,2.5)
+        p=P(pmax_LT,CO2_Air,Res)
 
-        mc_AirCan=MC_AirCan(0.03,p,0.75,h_CBuf(10000,20000))
+        mc_AirCan=MC_AirCan(0.03,p,R,h_CBuf(C_Buf,C_Max_Buf))
 
-        return (mc_BlowAir+mc_ExtAir+ mc_PadAir-mc_AirCan-mc_AirTop-mc_AirOut)/(300),(mc_AirTop-mc_TopOut)/(200)
+        return (mc_BlowAir+mc_ExtAir+ mc_PadAir-mc_AirCan-mc_AirTop-mc_AirOut)/(cap_CO2Air),(mc_AirTop-mc_TopOut)/(cap_CO2Top)
 
 #hàm dx chứa 2 CT 1 và 2 có  CO2_Air như y1,CO2_Top như y2
 #các biến chỉ phụ thuộc vào t trong bài này thì ta xem nhẹ bởi vì GT ko xem trong thời gian:
@@ -223,12 +232,24 @@ def rk4(func,args,CO2_Air0,CO2_Top0,h):
    k4_2=a[1] #get second component
    Q_final=CO2_Top0+(t/6)*(k1_2+2*k2_2+2*k3_2+k4_2)
    return P_final,Q_final
-  
-ans1,ans2=euler(dx,(427,417),427,417,0.1)    
-ans3,ans4=rk4(dx,(427,417),427,417,0.1)
-print("FOR EULER:")
-print("[ CO2_Air(t+h) ] :",round(ans1,4))
-print("[ CO2_Top(t+h) ] :",round(ans2,4)) 
-print("FOR RUNGE-KUTTAR:")
-print("[ CO2_Air(t+h) ] :",round(ans3,4))
-print("[ CO2_Top(t+h) ] :",round(ans4,4)) 
+
+#for read csv
+with open('MHH.csv','r') as csv_file:
+    csv_reader=csv.reader(csv_file)
+    
+    next(csv_reader) #for ignore the first line
+    
+    for line in csv_reader:
+       A,B,CO2_Out,U_Blow,U_ExtCO2,U_Pad,U_ThSrc,U_Roof,U_Side,U_VentForced,A_Flr,A_Roof,A_Side,P_Blow,K_ThSrc,C_d,C_w,T_Air,T_Top,T_Out,eta_HeatCO2,eta_Side,eta_SideThr,eta_Roof,eta_Roof_Thr,h_SideRoof,h_Roof,phi_ExtCO2,phi_Pad,phi_VentForced,p_Air,p_Top,v_Wind,zeta_InsScr,c_leakage,R,S,Hd,Ha,Res,T,T_0,k_T0,LAI,K,m,L_0,cap_CO2Air,cap_CO2Top,C_Buf,C_Max_Buf=Input(line[0],line[1],line[2],line[3],line[4],line[5],line[6],line[7],line[8],line[9],line[10],line[11],line[12],line[13],line[14],line[15],line[16],line[17],line[18],line[19],line[20],line[21],line[22],line[23],line[24],line[25],line[26],line[27],line[28],line[29],line[30],line[31],line[32],line[33],line[34],line[35],line[36],line[37],line[38],line[39],line[40],line[41],line[42],line[43],line[44],line[45],line[46],line[47],line[48],line[49],line[50])
+       print("CO2_Air0 =",A,"CO2_Top0 =",B)
+       ans1,ans2=euler(dx,(A,B),A,B,0.1)#h=0.1
+       print("FOR EULER:")
+       print("[ CO2_Air(t+h) ] :",round(ans1,4))
+       print("[ CO2_Top(t+h) ] :",round(ans2,4)) 
+       ans3,ans4=rk4(dx,(A,B),A,B,0.1)
+       print("FOR RUNGE-KUTTAR:")
+       print("[ CO2_Air(t+h) ] :",round(ans3,4))
+       print("[ CO2_Top(t+h) ] :",round(ans4,4))
+       print("-----------------------------------------")
+
+

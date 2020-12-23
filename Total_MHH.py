@@ -1,9 +1,5 @@
 import math
 import csv
-# formula (1 & 2)
-def dx(mc_BlowAir,mc_ExtAir,mc_PadAir,mc_AirCan,mc_AirTop,mc_AirOut,mc_TopOut,cap_CO2Air,cap_CO2Top):
-   print("Answers are: ")
-   return (mc_BlowAir+mc_ExtAir+ mc_PadAir-mc_AirCan-mc_AirTop-mc_AirOut)/(cap_CO2Air),(mc_AirTop-mc_TopOut)/(cap_CO2Top)
 
 # formula (3)
 def MC_BlowAir (eta_HeatCO2, U_Blow, P_Blow, A_Flr):
@@ -132,6 +128,65 @@ def Pmax_LT( Pmax_T,L,P_MLT):
     Pmax_LT = P_MLT * Pmax_T * L / (L + L_05)
     return Pmax_LT
 
+#function for input data
+def Input(*args):
+    ret=[]
+    for arg in args:
+        ret.append(float(arg))
+    return ret
+#khai bao bien ngoai tru CO2_Air và CO2_Top
+A,B,CO2_Out,U_Blow,U_ExtCO2,U_Pad,U_ThSrc,U_Roof,U_Side,U_VentForced,A_Flr,A_Roof,A_Side,P_Blow,K_ThSrc,C_d,C_w,T_Air,T_Top,T_Out,eta_HeatCO2,eta_Side,eta_SideThr,eta_Roof,eta_Roof_Thr,h_SideRoof,h_Roof,phi_ExtCO2,phi_Pad,phi_VentForced,p_Air,p_Top,v_Wind,zeta_InsScr,c_leakage,R,S,Hd,Ha,Res,T,T_0,k_T0,LAI,K,m,L_0,cap_CO2Air,cap_CO2Top,C_Buf,C_Max_Buf=Input('0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0')
+
+# formula (1 & 2)
+def dx(CO2_Air,CO2_Top):
+        #MC_BlowAir
+        mc_BlowAir=MC_BlowAir(eta_HeatCO2,U_Blow,P_Blow,A_Flr)
+        #MC_ExtAir
+        mc_ExtAir=MC_ExtAir(U_ExtCO2,phi_ExtCO2,A_Flr)
+        #MC_PadAir
+        mc_PadAir=MC_PadAir(U_Pad,phi_Pad,A_Flr,CO2_Out,CO2_Air)
+        #MC_AirTop
+        f_Th=f_ThScr(U_ThSrc,K_ThSrc,T_Air,T_Top,p_Air,p_Top)
+
+        mc_AirTop=MC_AirTop(f_Th,CO2_Air,CO2_Top)
+        #MC_AirOut
+        eta_insScr=eta_InsScr(zeta_InsScr)
+
+        f_leak=f_leakage(c_leakage,v_Wind)
+        # special_f_VentSide is f_VentRoofSide when A_Roof == 0
+        f2_VentSide=f_VentRoofSide(C_d,A_Flr,U_Roof,U_Side, 0 ,A_Side,h_SideRoof,T_Air,T_Top,C_w,v_Wind)
+        
+        f_ventRoofSide=f_VentRoofSide(C_d,A_Flr,U_Roof,U_Side,A_Flr,A_Side,h_SideRoof,T_Air,T_Top,C_w,v_Wind)
+        
+        f_ventSide=f_VentSide(eta_insScr, f2_VentSide, f_leak,U_ThSrc, f_ventRoofSide,eta_Side,eta_SideThr)
+        
+        f_ventForced=f_VentForced(eta_insScr,U_VentForced,phi_VentForced,A_Flr)
+        
+        mc_AirOut=MC_AirOut(f_ventSide, f_ventForced,CO2_Air,CO2_Out)
+        #MC_TopOut
+        f2_ventRoof=f2_VentRoof(C_d,U_Roof,A_Roof,A_Flr,h_Roof,T_Air,T_Out,C_w,v_Wind)
+
+        f_ventRoof=f_VentRoof(U_ThSrc,f2_ventRoof,f_leak,f_ventRoofSide,eta_insScr,eta_Side,eta_Roof,eta_Roof_Thr)
+
+        mc_TopOut=MC_TopOut(f_ventRoof,CO2_Top,CO2_Out)
+        #MC_AirCan
+        #calculate p
+        f_t=f_T(T,T_0,Hd,S)
+
+        P_Max_T1=P_Max_T(k_T0,Ha,T,T_0,Hd,S,f_t)
+
+        l=L(L_0,K,m,LAI)
+        
+        P_MLT=k_T0
+
+        pmax_LT=Pmax_LT(P_Max_T1,l,P_MLT)
+        
+        p=P(pmax_LT,CO2_Air,Res)
+
+        mc_AirCan=MC_AirCan(0.03,p,R,h_CBuf(C_Buf,C_Max_Buf))
+
+        return (mc_BlowAir+mc_ExtAir+ mc_PadAir-mc_AirCan-mc_AirTop-mc_AirOut)/(cap_CO2Air),(mc_AirTop-mc_TopOut)/(cap_CO2Top)
+
 #for read csv
 with open('MHH.csv','r') as csv_file:
     csv_reader=csv.reader(csv_file)
@@ -141,54 +196,9 @@ with open('MHH.csv','r') as csv_file:
     for line in csv_reader:
         print(line)
         ###
-        co2Air=(float)(line[0])# 2 tham số truyền vào
-        co2Top=(float)(line[1])
-        #MC_BlowAir
-        mc_BlowAir=MC_BlowAir((float)(line[20]),(float)(line[3]),(float)(line[13]),(float)(line[10]))
-        #MC_ExtAir
-        mc_ExtAir=MC_ExtAir((float)(line[4]),(float)(line[27]),(float)(line[10]))
-        #MC_PadAir
-        mc_PadAir=MC_PadAir((float)(line[5]),(float)(line[28]),(float)(line[10]),(float)(line[2]),co2Air)
-        #MC_AirTop
-        f_Th=f_ThScr((float)(line[6]),(float)(line[14]),(float)(line[17]),(float)(line[18]),(float)(line[30]),(float)(line[31]))
-
-        mc_AirTop=MC_AirTop(f_Th,co2Air,co2Top)
-        #MC_AirOut
-        eta_insScr=eta_InsScr((float)(line[33]))
-
-        f_leak=f_leakage((float)(line[34]),(float)(line[32]))
-        # special_f_VentSide is f_VentRoofSide when A_Roof == 0
-        f2_VentSide=f_VentRoofSide((float)(line[15]),(float)(line[10]),(float)(line[7]),(float)(line[8]),0,(float)(line[12]),(float)(line[25]),(float)(line[17]),(float)(line[18]),(float)(line[16]),(float)(line[32]))
-        
-        f_ventRoofSide=f_VentRoofSide((float)(line[15]),(float)(line[10]),(float)(line[7]),(float)(line[8]),(float)(line[10]),(float)(line[12]),(float)(line[25]),(float)(line[17]),(float)(line[18]),(float)(line[16]),(float)(line[32]))
-        
-        f_ventSide=f_VentSide(eta_insScr, f2_VentSide, f_leak,(float)(line[6]), f_ventRoofSide,(float)(line[21]),(float)(line[22]))
-        
-        f_ventForced=f_VentForced(eta_insScr,(float)(line[9]),(float)(line[29]),(float)(line[10]))
-        
-        mc_AirOut=MC_AirOut(f_ventSide, f_ventForced,co2Air,(float)(line[2]))
-        #MC_TopOut
-        f2_ventRoof=f2_VentRoof((float)(line[15]),(float)(line[7]),(float)(line[11]),(float)(line[10]),(float)(line[26]),(float)(line[17]),(float)(line[19]),(float)(line[16]),(float)(line[32]))
-
-        f_ventRoof=f_VentRoof((float)(line[6]),f2_ventRoof,f_leak,f_ventRoofSide,eta_insScr,(float)(line[21]),(float)(line[23]),(float)(line[24]))
-
-        mc_TopOut=MC_TopOut(f_ventRoof,co2Top,(float)(line[2]))
-        #MC_AirCan
-        #calculate p
-        f_t=f_T((float)(line[40]),(float)(line[41]),(float)(line[37]),(float)(line[36]))
-
-        P_Max_T1=P_Max_T((float)(line[42]),(float)(line[38]),(float)(line[40]),(float)(line[41]),(float)(line[37]),(float)(line[36]),f_t)
-
-        l=L((float)(line[46]),(float)(line[44]),(float)(line[45]),(float)(line[43]))
-        
-        P_MLT=float(line[42])
-
-        pmax_LT=Pmax_LT(P_Max_T1,l,P_MLT)
-        
-        p=P(pmax_LT,co2Air,(float)(line[39]))
-
-        mc_AirCan=MC_AirCan(0.03,p,(float)(line[35]),h_CBuf((float)(line[49]),(float)(line[50])))
-        #result
-        ans1,ans2=dx(mc_BlowAir,mc_ExtAir,mc_PadAir,mc_AirCan,mc_AirTop,mc_AirOut,mc_TopOut,(float)(line[47]),(float)(line[48]))
+        CO2_Air,CO2_Top,CO2_Out,U_Blow,U_ExtCO2,U_Pad,U_ThSrc,U_Roof,U_Side,U_VentForced,A_Flr,A_Roof,A_Side,P_Blow,K_ThSrc,C_d,C_w,T_Air,T_Top,T_Out,eta_HeatCO2,eta_Side,eta_SideThr,eta_Roof,eta_Roof_Thr,h_SideRoof,h_Roof,phi_ExtCO2,phi_Pad,phi_VentForced,p_Air,p_Top,v_Wind,zeta_InsScr,c_leakage,R,S,Hd,Ha,Res,T,T_0,k_T0,LAI,K,m,L_0,cap_CO2Air,cap_CO2Top,C_Buf,C_Max_Buf=Input(line[0],line[1],line[2],line[3],line[4],line[5],line[6],line[7],line[8],line[9],line[10],line[11],line[12],line[13],line[14],line[15],line[16],line[17],line[18],line[19],line[20],line[21],line[22],line[23],line[24],line[25],line[26],line[27],line[28],line[29],line[30],line[31],line[32],line[33],line[34],line[35],line[36],line[37],line[38],line[39],line[40],line[41],line[42],line[43],line[44],line[45],line[46],line[47],line[48],line[49],line[50])
+        print("CO2_Air =",CO2_Air,"CO2_Top =",CO2_Top)
+        ans1,ans2=dx(CO2_Air,CO2_Top)
         print("[ CO2_Air' ] :",round(ans1,4))
-        print("[ CO2_Top' ] :",round(ans2,4))  
+        print("[ CO2_Top' ] :",round(ans2,4))
+        print("--------------------------------------------")  
