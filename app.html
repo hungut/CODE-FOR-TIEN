@@ -1,0 +1,80 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="app.css">
+    <link href="https://fonts.googleapis.com/css?family=Sen&display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <title>SUNAPP | Home</title>
+</head>
+<body>
+    <div class="box">
+    <ul>
+        <li><a href="">home</a></li>
+        <li><a href="">Blog</a></li>
+        <li><a href="">shop</a></li>
+    </ul>
+    
+    <div class="icon">
+      <img src="cart.png" height="50" width="50" class="cart">
+      <h2>3</h2>
+      <img src="search.png" height="25" width="25" class="search">
+        <a href="button.html" class="btn-flip" data-back="Load" data-front="Down"></a>
+    
+    </div><h4><font>smart</font>app</h4></div>
+    <img src="12.png"  height="650" width="750" class="image">
+        <h5 class="sign">
+        <span class="fast-flicker">t</span> he creat<span class="flicker">i</span>ve int<span class="flicker">e</span>resti<span class="flicker">n</span>g app
+        </h5>
+       <h6 class="longer">
+         <spa>All in</spa>
+         <spa class="letter"></spa>
+         <spa>ne mobile app</spa>
+       </h6>
+       <h7>With our style coding ,the concept of one app's only meaning and successful when it's eye-catching and convenient for everybody</h7>
+       <div class="buttons">
+           <button class="apple" type="button"><i class="fa fa-apple"></i>Apple Store</button>
+           <button class="wrapper">
+                <div class="link_wrapper">
+                  <a href="#"><i class="fa fa-play"></i>play market</a>
+                  <div class="icon1">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268.832 268.832">
+                      <path d="M265.17 125.577l-80-80c-4.88-4.88-12.796-4.88-17.677 0-4.882 4.882-4.882 12.796 0 17.678l58.66 58.66H12.5c-6.903 0-12.5 5.598-12.5 12.5 0 6.903 5.597 12.5 12.5 12.5h213.654l-58.66 58.662c-4.88 4.882-4.88 12.796 0 17.678 2.44 2.44 5.64 3.66 8.84 3.66s6.398-1.22 8.84-3.66l79.997-80c4.883-4.882 4.883-12.796 0-17.678z"/>
+                    </svg>
+                  </div>
+                </div> 
+           </button>
+
+    </div>  
+    <div class="url-wrap">
+        <a class="deeper-button button-accent medium" style="" href="https://ninzio.com/octavian/about-us/">Get Started<span class="hover-effect"></span></a>
+       </div>
+      <h8>Coding by NGUYEN HUYNH TIEN </h8>
+  <!--Java sript-->
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+      <script type="text/javascript">
+          var buttonHover = function() {
+              $('.deeper-button').each(function() {
+      
+                  $(this).mouseenter(function(e) {
+                     var parentOffset = $(this).offset(); 
+                    
+                     var relX = e.pageX - parentOffset.left;
+                     var relY = e.pageY - parentOffset.top;
+                     $(this).find('.hover-effect').css({"left": relX, "top": relY });
+                  });
+      
+                  $(this).mouseleave(function(e) {
+      
+                       var parentOffset = $(this).offset(); 
+      
+                       var relX = e.pageX - parentOffset.left;
+                       var relY = e.pageY - parentOffset.top;
+                       $(this).find('.hover-effect').css({"left": relX, "top": relY });
+                  });
+              })
+          }
+      
+          buttonHover();
+      
+      </script>    
+</body>
+</html>
