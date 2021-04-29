@@ -1,0 +1,4 @@
+- Sửa cái schema :Khả
+- Viết report:Khả
+
+- Sửa cái Database + Thu thập dữ liệu:MN
