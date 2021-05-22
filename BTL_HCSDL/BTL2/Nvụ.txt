@@ -1,0 +1,56 @@
+Tasks
+i.1-->i.8:Hùng
+i.8-->i.16:Hưng
+ii.1-->ii.8:Khả
+ii.8-->ii.16:Lương
+Kiến trúc:Tiến 
+Chuẩn hóa:Nhật
+DEADLINE: 11:59pm 28/5/2021
+*Write procedure or functions cho các nhóm người dùng
+(i). Nhân viên của hiệu sách
+(i.1). Cập nhật thông tin về sách khi sách được nhập kho.
+(i.2). Cập nhật thông tin về sách khi sách được xuất kho.
+(i.3). Cập nhật thông tin giao dịch khi giao dịch trực tuyến gặp sự cố.
+(i.4). Xem tất cả các sách tính theo ISBN được mua trong một ngày.
+(i.5). Xem tổng số sách tính theo mỗi ISBN được mua trong một ngày.
+(i.6). Xem tổng số sách truyền thống tính theo mỗi ISBN được mua trong một ngày.
+(i.7). Xem tổng số sách điện tử được mua trong một ngày.
+(i.8). Xem tổng số sách điện tử được thuê trong một ngày.
+
+(i.9). Xem danh sách tác giả có số sách được mua nhiều nhất trong một ngày.
+(i.10). Xem danh sách tác giả có số sách được mua nhiều nhất trong một tháng.
+(i.11). Xem danh sách sách được mua nhiều nhất trong một tháng.
+(i.12). Xem danh sách mua hàng được thanh toán bằng thẻ trong một ngày.
+(i.13). Xem danh sách mua hàng được thanh toán bằng thẻ gặp sự cố trong một ngày.
+(i.14). Xem danh sách kho hàng có số sách tính theo mỗi ISBN dưới 10 quyển trong một ngày. 
+(i.15). Xem tổng số sách tính theo mỗi ISBN tại mỗi kho hàng trong một tháng.
+(i.16). Xem danh sách kho hàng được xuất kho nhiều nhất trong một tháng.
+
+(ii). Khách hàng
+(ii.1). Cập nhật thông tin cá nhân.
+(ii.2). Cập nhật thông tin thanh toán.
+(ii.3). Cập nhật giao dịch mua hàng.
+(ii.4). Xem danh sách sách theo thể loại.
+(ii.5). Xem danh sách sách theo tác giả.
+(ii.6). Xem danh sách sách theo từ khóa.
+(ii.7). Xem danh sách sách theo năm xuất bản.
+(ii.8). Xem danh sách sách mà mình đã mua trong một tháng.
+
+(ii.9). Xem danh sách các giao dịch mà mình đã thực hiện trong một tháng.
+(ii.10). Xem danh sách các giao dịch gặp sự cố mà mình đã thực hiện trong một tháng.
+(ii.11). Xem danh sách các giao dịch mà mình đã thực hiện nhưng chưa hoàn tất.
+(ii.12). Xem danh sách tác giả của cùng một thể loại.
+(ii.13). Xem danh sách tác giả của cùng một số từ khóa.
+(ii.14). Xem tổng số sách theo từng thể loại mà mình đã mua trong một tháng.
+(ii.15). Xem các giao dịch mà mình đã thực hiện có số lượng sách được mua nhiều nhất trong một tháng.
+(ii.16). Xem các giao dịch vừa có sách truyền thống vừa có sách điện tử được mua hoặc thuê mà mình đã thực hiện trong một tháng.
+
+*Kiến trúc cho ứng dụng :MVC
+- MVC là gì? Mô hinh nó thế nào?
+- Uư điểm
+- Laravel là gì ?
+- MVC trong Laravel như thế nào và tính hiệu quả của nó?
+*Chuẩn hóa các thực thể: Phụ thuộc hàm ;vi phạm 2NF,3NF ko-->chuẩn hóa lại
+
+
+
